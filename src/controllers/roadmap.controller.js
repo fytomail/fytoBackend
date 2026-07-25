@@ -14,7 +14,9 @@ class RoadmapController {
     try {
       const data = await Roadmap.findById(req.params.id);
       if (!data) {
-        return res.status(404).json({ status: 'error', message: 'Roadmap not found' });
+        const error = new Error('Roadmap not found');
+        error.statusCode = 404;
+        return next(error);
       }
       res.status(200).json({ status: 'success', data });
     } catch (error) {

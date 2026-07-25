@@ -14,7 +14,9 @@ class LeaderboardController {
     try {
       const data = await Leaderboard.findById(req.params.id);
       if (!data) {
-        return res.status(404).json({ status: 'error', message: 'Leaderboard not found' });
+        const error = new Error('Leaderboard not found');
+        error.statusCode = 404;
+        return next(error);
       }
       res.status(200).json({ status: 'success', data });
     } catch (error) {

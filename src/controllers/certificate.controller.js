@@ -14,7 +14,9 @@ class CertificateController {
     try {
       const data = await Certificate.findById(req.params.id);
       if (!data) {
-        return res.status(404).json({ status: 'error', message: 'Certificate not found' });
+        const error = new Error('Certificate not found');
+        error.statusCode = 404;
+        return next(error);
       }
       res.status(200).json({ status: 'success', data });
     } catch (error) {

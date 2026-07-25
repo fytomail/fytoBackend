@@ -14,7 +14,9 @@ class LearningController {
     try {
       const data = await Learning.findById(req.params.id);
       if (!data) {
-        return res.status(404).json({ status: 'error', message: 'Learning not found' });
+        const error = new Error('Learning not found');
+        error.statusCode = 404;
+        return next(error);
       }
       res.status(200).json({ status: 'success', data });
     } catch (error) {

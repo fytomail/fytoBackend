@@ -14,7 +14,9 @@ class JobsController {
     try {
       const data = await Jobs.findById(req.params.id);
       if (!data) {
-        return res.status(404).json({ status: 'error', message: 'Jobs not found' });
+        const error = new Error('Jobs not found');
+        error.statusCode = 404;
+        return next(error);
       }
       res.status(200).json({ status: 'success', data });
     } catch (error) {

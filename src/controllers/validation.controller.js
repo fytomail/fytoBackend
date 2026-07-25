@@ -14,7 +14,9 @@ class ValidationController {
     try {
       const data = await Validation.findById(req.params.id);
       if (!data) {
-        return res.status(404).json({ status: 'error', message: 'Validation not found' });
+        const error = new Error('Validation not found');
+        error.statusCode = 404;
+        return next(error);
       }
       res.status(200).json({ status: 'success', data });
     } catch (error) {

@@ -14,7 +14,9 @@ class RoleController {
     try {
       const data = await Role.findById(req.params.id);
       if (!data) {
-        return res.status(404).json({ status: 'error', message: 'Role not found' });
+        const error = new Error('Role not found');
+        error.statusCode = 404;
+        return next(error);
       }
       res.status(200).json({ status: 'success', data });
     } catch (error) {

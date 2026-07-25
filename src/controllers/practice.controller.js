@@ -14,7 +14,9 @@ class PracticeController {
     try {
       const data = await Practice.findById(req.params.id);
       if (!data) {
-        return res.status(404).json({ status: 'error', message: 'Practice not found' });
+        const error = new Error('Practice not found');
+        error.statusCode = 404;
+        return next(error);
       }
       res.status(200).json({ status: 'success', data });
     } catch (error) {

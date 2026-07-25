@@ -14,7 +14,9 @@ class AdminController {
     try {
       const data = await Admin.findById(req.params.id);
       if (!data) {
-        return res.status(404).json({ status: 'error', message: 'Admin not found' });
+        const error = new Error('Admin not found');
+        error.statusCode = 404;
+        return next(error);
       }
       res.status(200).json({ status: 'success', data });
     } catch (error) {
