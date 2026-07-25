@@ -76,6 +76,11 @@ app.get('/health', (req, res) => {
 // Swagger API documentation route
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+// Redirect root URL to Swagger API Docs
+app.get('/', (req, res) => {
+  res.redirect('/api-docs');
+});
+
 // Route mountings
 app.use(`${appConfig.apiPrefix}/auth`, authRoutes);
 app.use(`${appConfig.apiPrefix}/students`, studentRoutes);

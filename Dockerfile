@@ -4,6 +4,9 @@ FROM node:20-alpine
 # Set working directory inside the container
 WORKDIR /usr/src/app
 
+# Set Node environment to production
+ENV NODE_ENV=production
+
 # Copy package.json and package-lock.json first
 COPY package*.json ./
 
