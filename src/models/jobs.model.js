@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 
 const jobsSchema = new mongoose.Schema(
   {
-    // Schema placeholder for Jobs
+    title: { type: String, required: true },
+    companyName: { type: String, required: true },
+    salary: { type: String },
+    requirements: { type: [String] }
   },
   {
     timestamps: true

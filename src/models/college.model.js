@@ -2,7 +2,9 @@ const mongoose = require('mongoose');
 
 const collegeSchema = new mongoose.Schema(
   {
-    // Schema placeholder for College
+    name: { type: String, required: true },
+    location: { type: String },
+    establishedYear: { type: Number }
   },
   {
     timestamps: true
