@@ -23,9 +23,11 @@ const errorHandler = (err, req, res, next) => {
 
   const response = {
     status: 'error',
-    statusCode,
-    message,
-    ...(appConfig.env === 'development' && { stack: error.stack })
+    error: {
+      statusCode,
+      message,
+      ...(appConfig.env === 'development' && { stack: error.stack })
+    }
   };
 
   res.status(statusCode).json(response);
