@@ -1,0 +1,273 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Prime Wave Backend API Suite",
+    "version": "2.0.0",
+    "description": "Interactive API Documentation covering all 22 route groups mapped to the 19 BRDs."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5001",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": ["System"],
+        "summary": "Health Check Status",
+        "responses": {
+          "200": { "description": "Server is healthy" }
+        }
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "tags": ["Authentication & User Management (BRD 01)"],
+        "summary": "User Registration",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string", "example": "test@example.com" },
+                  "password": { "type": "string", "minLength": 8, "example": "password123" },
+                  "role": { "type": "string", "enum": ["student", "recruiter"], "default": "student" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Created" } }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": ["Authentication & User Management (BRD 01)"],
+        "summary": "User Login",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string", "example": "test@example.com" },
+                  "password": { "type": "string", "example": "password123" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": ["Authentication & User Management (BRD 01)"],
+        "summary": "User Logout",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["refreshToken"],
+                "properties": {
+                  "refreshToken": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/v1/auth/refresh-tokens": {
+      "post": {
+        "tags": ["Authentication & User Management (BRD 01)"],
+        "summary": "Refresh Auth Tokens",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["refreshToken"],
+                "properties": {
+                  "refreshToken": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/v1/students/me": {
+      "get": {
+        "tags": ["Student Platform (BRD 01)"],
+        "summary": "Get Profile",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "OK" } }
+      },
+      "post": {
+        "tags": ["Student Platform (BRD 01)"],
+        "summary": "Create Profile",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "201": { "description": "Created" } }
+      },
+      "patch": {
+        "tags": ["Student Platform (BRD 01)"],
+        "summary": "Update Profile",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/v1/domains": {
+      "get": { "tags": ["Student Platform (BRD 01)"], "summary": "List Domains", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Student Platform (BRD 01)"], "summary": "Create Domain", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/roles": {
+      "get": { "tags": ["Student Platform (BRD 01)"], "summary": "List Roles", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Student Platform (BRD 01)"], "summary": "Create Role", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/roadmaps": {
+      "get": { "tags": ["Learning Management System (BRD 02)"], "summary": "List Roadmaps", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Learning Management System (BRD 02)"], "summary": "Create Roadmap", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/learning": {
+      "get": { "tags": ["Learning Management System (BRD 02)"], "summary": "List Learning Analytics & Progress", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Learning Management System (BRD 02)"], "summary": "Record Learning Activity", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/practice": {
+      "get": { "tags": ["AI Practice Platform (BRD 03)"], "summary": "List Coding Challenges", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["AI Practice Platform (BRD 03)"], "summary": "Create Practice Challenge", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/projects": {
+      "get": { "tags": ["Project Management System (BRD 04)"], "summary": "List Industry Projects", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Project Management System (BRD 04)"], "summary": "Submit Project", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/tasks": {
+      "get": { "tags": ["Project Management System (BRD 04)"], "summary": "List Milestones & Daily Tasks", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Project Management System (BRD 04)"], "summary": "Create Task Entry", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/validation": {
+      "get": { "tags": ["AI Validation Engine (BRD 05)"], "summary": "List Validation Submissions", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["AI Validation Engine (BRD 05)"], "summary": "Trigger Automated Testing Suite", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/credit": {
+      "get": { "tags": ["Credit Score Engine (BRD 06)"], "summary": "List Student Credits Logs", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Credit Score Engine (BRD 06)"], "summary": "Add Credit Transaction", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/leaderboard": {
+      "get": { "tags": ["Leaderboard System (BRD 07)"], "summary": "Get Global and Colleges Rankings", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Leaderboard System (BRD 07)"], "summary": "Recalculate Leaderboard Snapshot", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/certificates": {
+      "get": { "tags": ["Certification System (BRD 08)"], "summary": "List Verified Certificates", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Certification System (BRD 08)"], "summary": "Generate Digital Certificate", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/profiles": {
+      "get": { "tags": ["Portfolio Platform (BRD 09)"], "summary": "List Portfolios", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Portfolio Platform (BRD 09)"], "summary": "Create Portfolio Entry", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/companies": {
+      "get": { "tags": ["Company Portal (BRD 10)"], "summary": "List Registered Companies", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Company Portal (BRD 10)"], "summary": "Register Company Profile", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/recruiters": {
+      "get": { "tags": ["Company Portal (BRD 10)"], "summary": "List Recruiters", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Company Portal (BRD 10)"], "summary": "Add Recruiter Team Member", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/jobs": {
+      "get": { "tags": ["Hiring Marketplace (BRD 11)"], "summary": "List Job Postings", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Hiring Marketplace (BRD 11)"], "summary": "Create Job Post", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/hiring": {
+      "get": { "tags": ["Hiring Marketplace (BRD 11)"], "summary": "List Hiring Pipeline Status", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Hiring Marketplace (BRD 11)"], "summary": "Update Application Status", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/colleges": {
+      "get": { "tags": ["College Portal (BRD 15)"], "summary": "List Partner Colleges", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["College Portal (BRD 15)"], "summary": "Add College Profile", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/payments": {
+      "get": { "tags": ["Billing & Payments System (BRD 17)"], "summary": "List Billing Invoices", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Billing & Payments System (BRD 17)"], "summary": "Process Payment Checkout", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/ai/roadmap": {
+      "post": {
+        "tags": ["AI Engine Services (BRD 14)"],
+        "summary": "AI Generated Study Roadmaps",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["domain", "role"],
+                "properties": {
+                  "domain": { "type": "string", "example": "Mobile Dev" },
+                  "role": { "type": "string", "example": "iOS Engineer" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/v1/ai/evaluate": {
+      "post": {
+        "tags": ["AI Engine Services (BRD 14)"],
+        "summary": "AI Product score evaluation reviews",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["projectTitle", "requirements", "codeRepoUrl", "liveUrl"],
+                "properties": {
+                  "projectTitle": { "type": "string" },
+                  "requirements": { "type": "string" },
+                  "codeRepoUrl": { "type": "string" },
+                  "liveUrl": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/v1/admin": {
+      "get": { "tags": ["Admin Portal & Settings (BRD 12/19)"], "summary": "List Admin Audit Logs", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Admin Portal & Settings (BRD 12/19)"], "summary": "Create Setting Override", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/notifications": {
+      "get": { "tags": ["Notifications & Messages (BRD 16)"], "summary": "List Alert Notifications", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Notifications & Messages (BRD 16)"], "summary": "Send Push/Email Notification", "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/v1/analytics": {
+      "get": { "tags": ["Analytics Dashboard (BRD 13)"], "summary": "List Platform Analytics Summary", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Analytics Dashboard (BRD 13)"], "summary": "Aggregate Analytics Snapshots", "responses": { "201": { "description": "Created" } } }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
