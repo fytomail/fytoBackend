@@ -23,8 +23,14 @@ const validate = (schema) => (req, res, next) => {
     .validate(object);
 
   if (error) {
+    const errorDetails = error.details.map((detail) => ({
+      field: detail.path.join('.'),
+      message: detail.message
+    }));
     const errorMessage = error.details.map((detail) => detail.message).join(', ');
-    return next(new ApiError(400, errorMessage));
+    const apiError = new ApiError(400, errorMessage);
+    apiError.errors = errorDetails;
+    return next(apiError);
   }
 
   keys.forEach((key) => {
