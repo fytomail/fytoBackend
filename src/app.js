@@ -34,7 +34,7 @@ const collegeRoutes = require('./routes/college.routes');
 const paymentRoutes = require('./routes/payment.routes');
 const aiRoutes = require('./routes/ai.routes');
 const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./docs/swagger.json');
+const swaggerDocument = require('./swagger/swagger.json');
 
 const app = express();
 
