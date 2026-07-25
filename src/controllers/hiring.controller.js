@@ -1,0 +1,53 @@
+const Hiring = require('../models/hiring.model');
+
+class HiringController {
+  async list(req, res, next) {
+    try {
+      const data = await Hiring.find(req.query);
+      res.status(200).json({ status: 'success', data });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async get(req, res, next) {
+    try {
+      const data = await Hiring.findById(req.params.id);
+      if (!data) {
+        return res.status(404).json({ status: 'error', message: 'Hiring details not found' });
+      }
+      res.status(200).json({ status: 'success', data });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async create(req, res, next) {
+    try {
+      const data = await Hiring.create(req.body);
+      res.status(201).json({ status: 'success', data });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async update(req, res, next) {
+    try {
+      const data = await Hiring.findByIdAndUpdate(req.params.id, req.body, { new: true });
+      res.status(200).json({ status: 'success', data });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async delete(req, res, next) {
+    try {
+      await Hiring.findByIdAndDelete(req.params.id);
+      res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+
+module.exports = new HiringController();
