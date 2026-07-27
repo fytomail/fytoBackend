@@ -1,5 +1,5 @@
 # Use Node 20 alpine version for a lightweight and secure image
-FROM node:20-alpine
+FROM node:20-alpine AS production
 
 # Set working directory inside the container
 WORKDIR /usr/src/app
