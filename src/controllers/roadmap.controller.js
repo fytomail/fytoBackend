@@ -1,55 +1,75 @@
-const Roadmap = require('../models/roadmap.model.js');
-
-class RoadmapController {
-  async list(req, res, next) {
-    try {
-      const data = await Roadmap.find(req.query);
-      res.status(200).json({ status: 'success', data });
-    } catch (error) {
-      next(error);
-    }
+// Roadmap Controller
+const getRoadmap = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Roadmap data" });
+  } catch (error) {
+    next(error);
   }
+};
 
-  async get(req, res, next) {
-    try {
-      const data = await Roadmap.findById(req.params.id);
-      if (!data) {
-        const error = new Error('Roadmap not found');
-        error.statusCode = 404;
-        return next(error);
-      }
-      res.status(200).json({ status: 'success', data });
-    } catch (error) {
-      next(error);
-    }
+const getSemesters = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Semesters list" });
+  } catch (error) {
+    next(error);
   }
+};
 
-  async create(req, res, next) {
-    try {
-      const data = await Roadmap.create(req.body);
-      res.status(201).json({ status: 'success', data });
-    } catch (error) {
-      next(error);
-    }
+const getSemesterById = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Semester details" });
+  } catch (error) {
+    next(error);
   }
+};
 
-  async update(req, res, next) {
-    try {
-      const data = await Roadmap.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      res.status(200).json({ status: 'success', data });
-    } catch (error) {
-      next(error);
-    }
+const getSemesterModules = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Semester modules" });
+  } catch (error) {
+    next(error);
   }
+};
 
-  async delete(req, res, next) {
-    try {
-      await Roadmap.findByIdAndDelete(req.params.id);
-      res.status(204).send();
-    } catch (error) {
-      next(error);
-    }
+const getModuleTopics = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Module topics" });
+  } catch (error) {
+    next(error);
   }
-}
+};
 
-module.exports = new RoadmapController();
+const getTopicById = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Topic details" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const completeTopic = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Topic marked complete" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const unlockSemester = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Semester unlocked" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  getRoadmap,
+  getSemesters,
+  getSemesterById,
+  getSemesterModules,
+  getModuleTopics,
+  getTopicById,
+  completeTopic,
+  unlockSemester
+};

@@ -9,30 +9,19 @@ const errorHandler = require('./middlewares/errorHandler');
 const ApiError = require('./utils/ApiError');
 const logger = require('./middlewares/logger');
 
+// Domain Route Modules (Prime Wave BRD Workflow)
 const authRoutes = require('./routes/auth.routes');
-const studentRoutes = require('./routes/student.routes');
-const domainRoutes = require('./routes/domain.routes');
-const roleRoutes = require('./routes/role.routes');
+const dashboardRoutes = require('./routes/dashboard.routes');
 const roadmapRoutes = require('./routes/roadmap.routes');
-const learningRoutes = require('./routes/learning.routes');
-const practiceRoutes = require('./routes/practice.routes');
-const taskRoutes = require('./routes/task.routes');
-const projectRoutes = require('./routes/project.routes');
-const validationRoutes = require('./routes/validation.routes');
-const certificateRoutes = require('./routes/certificate.routes');
-const profileRoutes = require('./routes/profile.routes');
-const companyRoutes = require('./routes/company.routes');
-const jobsRoutes = require('./routes/jobs.routes');
-const recruiterRoutes = require('./routes/recruiter.routes');
-const hiringRoutes = require('./routes/hiring.routes');
-const adminRoutes = require('./routes/admin.routes');
-const notificationRoutes = require('./routes/notification.routes');
-const analyticsRoutes = require('./routes/analytics.routes');
-const creditRoutes = require('./routes/credit.routes');
-const leaderboardRoutes = require('./routes/leaderboard.routes');
-const collegeRoutes = require('./routes/college.routes');
-const paymentRoutes = require('./routes/payment.routes');
 const aiRoutes = require('./routes/ai.routes');
+const assignmentRoutes = require('./routes/assignment.routes');
+const projectRoutes = require('./routes/project.routes');
+const leaderboardRoutes = require('./routes/leaderboard.routes');
+const certificateRoutes = require('./routes/certificate.routes');
+const portfolioRoutes = require('./routes/portfolio.routes');
+const feedbackRoutes = require('./routes/feedback.routes');
+const companyRoutes = require('./routes/company.routes');
+const adminRoutes = require('./routes/admin.routes');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger/swagger.json');
 
@@ -81,31 +70,19 @@ app.get('/', (req, res) => {
   res.redirect('/api-docs');
 });
 
-// Route mountings
+// Prime Wave API Route Mountings
 app.use(`${appConfig.apiPrefix}/auth`, authRoutes);
-app.use(`${appConfig.apiPrefix}/students`, studentRoutes);
-app.use(`${appConfig.apiPrefix}/domains`, domainRoutes);
-app.use(`${appConfig.apiPrefix}/roles`, roleRoutes);
-app.use(`${appConfig.apiPrefix}/roadmaps`, roadmapRoutes);
-app.use(`${appConfig.apiPrefix}/learning`, learningRoutes);
-app.use(`${appConfig.apiPrefix}/practice`, practiceRoutes);
-app.use(`${appConfig.apiPrefix}/projects`, projectRoutes);
-app.use(`${appConfig.apiPrefix}/tasks`, taskRoutes);
-app.use(`${appConfig.apiPrefix}/validation`, validationRoutes);
-app.use(`${appConfig.apiPrefix}/certificates`, certificateRoutes);
-app.use(`${appConfig.apiPrefix}/profiles`, profileRoutes);
-app.use(`${appConfig.apiPrefix}/companies`, companyRoutes);
-app.use(`${appConfig.apiPrefix}/jobs`, jobsRoutes);
-app.use(`${appConfig.apiPrefix}/recruiters`, recruiterRoutes);
-app.use(`${appConfig.apiPrefix}/hiring`, hiringRoutes);
-app.use(`${appConfig.apiPrefix}/admin`, adminRoutes);
-app.use(`${appConfig.apiPrefix}/notifications`, notificationRoutes);
-app.use(`${appConfig.apiPrefix}/analytics`, analyticsRoutes);
-app.use(`${appConfig.apiPrefix}/credit`, creditRoutes);
-app.use(`${appConfig.apiPrefix}/leaderboard`, leaderboardRoutes);
-app.use(`${appConfig.apiPrefix}/colleges`, collegeRoutes);
-app.use(`${appConfig.apiPrefix}/payments`, paymentRoutes);
+app.use(`${appConfig.apiPrefix}/dashboard`, dashboardRoutes);
+app.use(`${appConfig.apiPrefix}/roadmap`, roadmapRoutes);
 app.use(`${appConfig.apiPrefix}/ai`, aiRoutes);
+app.use(`${appConfig.apiPrefix}/assignments`, assignmentRoutes);
+app.use(`${appConfig.apiPrefix}/projects`, projectRoutes);
+app.use(`${appConfig.apiPrefix}/leaderboard`, leaderboardRoutes);
+app.use(`${appConfig.apiPrefix}/certificates`, certificateRoutes);
+app.use(`${appConfig.apiPrefix}/portfolio`, portfolioRoutes);
+app.use(`${appConfig.apiPrefix}/feedback`, feedbackRoutes);
+app.use(`${appConfig.apiPrefix}/company`, companyRoutes);
+app.use(`${appConfig.apiPrefix}/admin`, adminRoutes);
 
 // Handle unknown API paths with a 404 error
 app.use((req, res, next) => {

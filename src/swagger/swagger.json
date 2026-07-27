@@ -1,272 +1,1547 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Prime Wave Backend API Suite",
-    "version": "2.0.0",
-    "description": "Interactive API Documentation covering all 22 route groups mapped to the 19 BRDs."
+    "title": "Prime Wave Platform API",
+    "description": "API documentation for the Prime Wave Platform (12 Modules)",
+    "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "http://localhost:5001",
-      "description": "Local development server"
+      "url": "http://localhost:5000/api/v1",
+      "description": "Local Development Server"
     }
   ],
   "paths": {
-    "/health": {
-      "get": {
-        "tags": ["System"],
-        "summary": "Health Check Status",
+    "/auth/login": {
+      "post": {
+        "summary": "Login",
+        "tags": [
+          "Authentication"
+        ],
         "responses": {
-          "200": { "description": "Server is healthy" }
+          "200": {
+            "description": "Successful response"
+          }
         }
       }
     },
-    "/api/v1/auth/register": {
+    "/auth/logout": {
       "post": {
-        "tags": ["Authentication & User Management (BRD 01)"],
-        "summary": "User Registration",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["email", "password"],
-                "properties": {
-                  "email": { "type": "string", "example": "test@example.com" },
-                  "password": { "type": "string", "minLength": 8, "example": "password123" },
-                  "role": { "type": "string", "enum": ["student", "recruiter"], "default": "student" }
-                }
-              }
-            }
+        "summary": "Logout",
+        "tags": [
+          "Authentication"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
           }
-        },
-        "responses": { "201": { "description": "Created" } }
+        }
       }
     },
-    "/api/v1/auth/login": {
+    "/auth/refresh-token": {
       "post": {
-        "tags": ["Authentication & User Management (BRD 01)"],
-        "summary": "User Login",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["email", "password"],
-                "properties": {
-                  "email": { "type": "string", "example": "test@example.com" },
-                  "password": { "type": "string", "example": "password123" }
-                }
-              }
-            }
+        "summary": "Refresh JWT",
+        "tags": [
+          "Authentication"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
           }
-        },
-        "responses": { "200": { "description": "OK" } }
+        }
       }
     },
-    "/api/v1/auth/logout": {
+    "/auth/forgot-password": {
       "post": {
-        "tags": ["Authentication & User Management (BRD 01)"],
-        "summary": "User Logout",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["refreshToken"],
-                "properties": {
-                  "refreshToken": { "type": "string" }
-                }
-              }
-            }
+        "summary": "Forgot password",
+        "tags": [
+          "Authentication"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
           }
-        },
-        "responses": { "200": { "description": "OK" } }
+        }
       }
     },
-    "/api/v1/auth/refresh-tokens": {
+    "/auth/reset-password": {
       "post": {
-        "tags": ["Authentication & User Management (BRD 01)"],
-        "summary": "Refresh Auth Tokens",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["refreshToken"],
-                "properties": {
-                  "refreshToken": { "type": "string" }
-                }
-              }
-            }
+        "summary": "Reset password",
+        "tags": [
+          "Authentication"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
           }
-        },
-        "responses": { "200": { "description": "OK" } }
+        }
       }
     },
-    "/api/v1/students/me": {
+    "/auth/profile": {
       "get": {
-        "tags": ["Student Platform (BRD 01)"],
-        "summary": "Get Profile",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "OK" } }
+        "summary": "Logged-in user",
+        "tags": [
+          "Authentication"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/auth/change-password": {
+      "put": {
+        "summary": "Change password",
+        "tags": [
+          "Authentication"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/auth/verify-token": {
+      "get": {
+        "summary": "Verify JWT",
+        "tags": [
+          "Authentication"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/dashboard": {
+      "get": {
+        "summary": "Get dashboard data",
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/dashboard/progress": {
+      "get": {
+        "summary": "Get progress",
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/dashboard/credits": {
+      "get": {
+        "summary": "Get credits",
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/dashboard/recent-projects": {
+      "get": {
+        "summary": "Get recent projects",
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/dashboard/recent-assignments": {
+      "get": {
+        "summary": "Get recent assignments",
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/roadmap": {
+      "get": {
+        "summary": "Get roadmap",
+        "tags": [
+          "Roadmap"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/roadmap/semesters": {
+      "get": {
+        "summary": "Get semesters",
+        "tags": [
+          "Roadmap"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/roadmap/semester/{id}": {
+      "get": {
+        "summary": "Get semester by ID",
+        "tags": [
+          "Roadmap"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/roadmap/semester/{id}/modules": {
+      "get": {
+        "summary": "Get modules for semester",
+        "tags": [
+          "Roadmap"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/roadmap/module/{id}/topics": {
+      "get": {
+        "summary": "Get topics for module",
+        "tags": [
+          "Roadmap"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/roadmap/topic/{id}": {
+      "get": {
+        "summary": "Get topic",
+        "tags": [
+          "Roadmap"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/roadmap/topic/{id}/complete": {
+      "put": {
+        "summary": "Complete topic",
+        "tags": [
+          "Roadmap"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/roadmap/semester/unlock": {
+      "put": {
+        "summary": "Unlock semester",
+        "tags": [
+          "Roadmap"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/ai/summary": {
+      "post": {
+        "summary": "AI Summary",
+        "tags": [
+          "AI Learning"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/ai/ask": {
+      "post": {
+        "summary": "AI Ask",
+        "tags": [
+          "AI Learning"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/ai/notes": {
+      "post": {
+        "summary": "AI Notes",
+        "tags": [
+          "AI Learning"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/ai/explain-code": {
+      "post": {
+        "summary": "AI Explain Code",
+        "tags": [
+          "AI Learning"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/ai/examples": {
+      "post": {
+        "summary": "AI Examples",
+        "tags": [
+          "AI Learning"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/ai/hints": {
+      "post": {
+        "summary": "AI Hints",
+        "tags": [
+          "AI Learning"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/assignments": {
+      "get": {
+        "summary": "Get all assignments",
+        "tags": [
+          "Assignments"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/assignments/{id}": {
+      "get": {
+        "summary": "Get assignment by ID",
+        "tags": [
+          "Assignments"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/assignments/submit": {
+      "post": {
+        "summary": "Submit assignment",
+        "tags": [
+          "Assignments"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/assignments/submission/{id}": {
+      "get": {
+        "summary": "Get submission by ID",
+        "tags": [
+          "Assignments"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/assignments/evaluate": {
+      "post": {
+        "summary": "Evaluate assignment",
+        "tags": [
+          "Assignments"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/assignments/feedback": {
+      "get": {
+        "summary": "Get assignment feedback",
+        "tags": [
+          "Assignments"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/assignments/score": {
+      "get": {
+        "summary": "Get assignment score",
+        "tags": [
+          "Assignments"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/assignments/history": {
+      "get": {
+        "summary": "Get assignment history",
+        "tags": [
+          "Assignments"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/projects": {
+      "get": {
+        "summary": "Get projects",
+        "tags": [
+          "Projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/projects/{id}": {
+      "get": {
+        "summary": "Get project by ID",
+        "tags": [
+          "Projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/projects/create": {
+      "post": {
+        "summary": "Create project",
+        "tags": [
+          "Projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/projects/upload": {
+      "post": {
+        "summary": "Upload project",
+        "tags": [
+          "Projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/projects/submit": {
+      "post": {
+        "summary": "Submit project",
+        "tags": [
+          "Projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/projects/evaluate": {
+      "post": {
+        "summary": "Evaluate project",
+        "tags": [
+          "Projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/projects/report": {
+      "get": {
+        "summary": "Get project report",
+        "tags": [
+          "Projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/projects/history": {
+      "get": {
+        "summary": "Get project history",
+        "tags": [
+          "Projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/leaderboard": {
+      "get": {
+        "summary": "Get leaderboard",
+        "tags": [
+          "Leaderboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/leaderboard/top10": {
+      "get": {
+        "summary": "Get top 10",
+        "tags": [
+          "Leaderboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/leaderboard/rank": {
+      "get": {
+        "summary": "Get rank",
+        "tags": [
+          "Leaderboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/leaderboard/profile/{id}": {
+      "get": {
+        "summary": "Get leaderboard profile",
+        "tags": [
+          "Leaderboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/certificates": {
+      "get": {
+        "summary": "Get certificates",
+        "tags": [
+          "Certificates"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/certificates/{id}": {
+      "get": {
+        "summary": "Get certificate by ID",
+        "tags": [
+          "Certificates"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/certificates/download": {
+      "get": {
+        "summary": "Download certificate",
+        "tags": [
+          "Certificates"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/certificates/verify": {
+      "get": {
+        "summary": "Verify certificate",
+        "tags": [
+          "Certificates"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/certificates/generate": {
+      "post": {
+        "summary": "Generate certificate",
+        "tags": [
+          "Certificates"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/portfolio": {
+      "get": {
+        "summary": "Get portfolio",
+        "tags": [
+          "Portfolio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update portfolio",
+        "tags": [
+          "Portfolio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/portfolio/{studentId}": {
+      "get": {
+        "summary": "Get portfolio by student ID",
+        "tags": [
+          "Portfolio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/portfolio/github": {
+      "post": {
+        "summary": "Connect GitHub",
+        "tags": [
+          "Portfolio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/portfolio/resume": {
+      "post": {
+        "summary": "Upload resume",
+        "tags": [
+          "Portfolio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/portfolio/public": {
+      "get": {
+        "summary": "Get public portfolio",
+        "tags": [
+          "Portfolio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/feedback": {
+      "post": {
+        "summary": "Submit feedback",
+        "tags": [
+          "Feedback"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get feedback",
+        "tags": [
+          "Feedback"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/feedback/{id}": {
+      "get": {
+        "summary": "Get feedback by ID",
+        "tags": [
+          "Feedback"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete feedback",
+        "tags": [
+          "Feedback"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/company/login": {
+      "post": {
+        "summary": "Company login",
+        "tags": [
+          "Company"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/company/profile": {
+      "get": {
+        "summary": "Company profile",
+        "tags": [
+          "Company"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/company/jobs": {
+      "get": {
+        "summary": "Get jobs",
+        "tags": [
+          "Company"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
       },
       "post": {
-        "tags": ["Student Platform (BRD 01)"],
-        "summary": "Create Profile",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "201": { "description": "Created" } }
+        "summary": "Create job",
+        "tags": [
+          "Company"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/company/jobs/{id}": {
+      "put": {
+        "summary": "Update job",
+        "tags": [
+          "Company"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
       },
-      "patch": {
-        "tags": ["Student Platform (BRD 01)"],
-        "summary": "Update Profile",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "OK" } }
-      }
-    },
-    "/api/v1/domains": {
-      "get": { "tags": ["Student Platform (BRD 01)"], "summary": "List Domains", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Student Platform (BRD 01)"], "summary": "Create Domain", "responses": { "201": { "description": "Created" } } }
-    },
-    "/api/v1/roles": {
-      "get": { "tags": ["Student Platform (BRD 01)"], "summary": "List Roles", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Student Platform (BRD 01)"], "summary": "Create Role", "responses": { "201": { "description": "Created" } } }
-    },
-    "/api/v1/roadmaps": {
-      "get": { "tags": ["Learning Management System (BRD 02)"], "summary": "List Roadmaps", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Learning Management System (BRD 02)"], "summary": "Create Roadmap", "responses": { "201": { "description": "Created" } } }
-    },
-    "/api/v1/learning": {
-      "get": { "tags": ["Learning Management System (BRD 02)"], "summary": "List Learning Analytics & Progress", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Learning Management System (BRD 02)"], "summary": "Record Learning Activity", "responses": { "201": { "description": "Created" } } }
-    },
-    "/api/v1/practice": {
-      "get": { "tags": ["AI Practice Platform (BRD 03)"], "summary": "List Coding Challenges", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["AI Practice Platform (BRD 03)"], "summary": "Create Practice Challenge", "responses": { "201": { "description": "Created" } } }
-    },
-    "/api/v1/projects": {
-      "get": { "tags": ["Project Management System (BRD 04)"], "summary": "List Industry Projects", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Project Management System (BRD 04)"], "summary": "Submit Project", "responses": { "201": { "description": "Created" } } }
-    },
-    "/api/v1/tasks": {
-      "get": { "tags": ["Project Management System (BRD 04)"], "summary": "List Milestones & Daily Tasks", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Project Management System (BRD 04)"], "summary": "Create Task Entry", "responses": { "201": { "description": "Created" } } }
-    },
-    "/api/v1/validation": {
-      "get": { "tags": ["AI Validation Engine (BRD 05)"], "summary": "List Validation Submissions", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["AI Validation Engine (BRD 05)"], "summary": "Trigger Automated Testing Suite", "responses": { "201": { "description": "Created" } } }
-    },
-    "/api/v1/credit": {
-      "get": { "tags": ["Credit Score Engine (BRD 06)"], "summary": "List Student Credits Logs", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Credit Score Engine (BRD 06)"], "summary": "Add Credit Transaction", "responses": { "201": { "description": "Created" } } }
-    },
-    "/api/v1/leaderboard": {
-      "get": { "tags": ["Leaderboard System (BRD 07)"], "summary": "Get Global and Colleges Rankings", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Leaderboard System (BRD 07)"], "summary": "Recalculate Leaderboard Snapshot", "responses": { "201": { "description": "Created" } } }
-    },
-    "/api/v1/certificates": {
-      "get": { "tags": ["Certification System (BRD 08)"], "summary": "List Verified Certificates", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Certification System (BRD 08)"], "summary": "Generate Digital Certificate", "responses": { "201": { "description": "Created" } } }
-    },
-    "/api/v1/profiles": {
-      "get": { "tags": ["Portfolio Platform (BRD 09)"], "summary": "List Portfolios", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Portfolio Platform (BRD 09)"], "summary": "Create Portfolio Entry", "responses": { "201": { "description": "Created" } } }
-    },
-    "/api/v1/companies": {
-      "get": { "tags": ["Company Portal (BRD 10)"], "summary": "List Registered Companies", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Company Portal (BRD 10)"], "summary": "Register Company Profile", "responses": { "201": { "description": "Created" } } }
-    },
-    "/api/v1/recruiters": {
-      "get": { "tags": ["Company Portal (BRD 10)"], "summary": "List Recruiters", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Company Portal (BRD 10)"], "summary": "Add Recruiter Team Member", "responses": { "201": { "description": "Created" } } }
-    },
-    "/api/v1/jobs": {
-      "get": { "tags": ["Hiring Marketplace (BRD 11)"], "summary": "List Job Postings", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Hiring Marketplace (BRD 11)"], "summary": "Create Job Post", "responses": { "201": { "description": "Created" } } }
-    },
-    "/api/v1/hiring": {
-      "get": { "tags": ["Hiring Marketplace (BRD 11)"], "summary": "List Hiring Pipeline Status", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Hiring Marketplace (BRD 11)"], "summary": "Update Application Status", "responses": { "201": { "description": "Created" } } }
-    },
-    "/api/v1/colleges": {
-      "get": { "tags": ["College Portal (BRD 15)"], "summary": "List Partner Colleges", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["College Portal (BRD 15)"], "summary": "Add College Profile", "responses": { "201": { "description": "Created" } } }
-    },
-    "/api/v1/payments": {
-      "get": { "tags": ["Billing & Payments System (BRD 17)"], "summary": "List Billing Invoices", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Billing & Payments System (BRD 17)"], "summary": "Process Payment Checkout", "responses": { "201": { "description": "Created" } } }
-    },
-    "/api/v1/ai/roadmap": {
-      "post": {
-        "tags": ["AI Engine Services (BRD 14)"],
-        "summary": "AI Generated Study Roadmaps",
-        "security": [{ "bearerAuth": [] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["domain", "role"],
-                "properties": {
-                  "domain": { "type": "string", "example": "Mobile Dev" },
-                  "role": { "type": "string", "example": "iOS Engineer" }
-                }
-              }
-            }
+      "delete": {
+        "summary": "Delete job",
+        "tags": [
+          "Company"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
           }
-        },
-        "responses": { "200": { "description": "OK" } }
+        }
       }
     },
-    "/api/v1/ai/evaluate": {
-      "post": {
-        "tags": ["AI Engine Services (BRD 14)"],
-        "summary": "AI Product score evaluation reviews",
-        "security": [{ "bearerAuth": [] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["projectTitle", "requirements", "codeRepoUrl", "liveUrl"],
-                "properties": {
-                  "projectTitle": { "type": "string" },
-                  "requirements": { "type": "string" },
-                  "codeRepoUrl": { "type": "string" },
-                  "liveUrl": { "type": "string" }
-                }
-              }
-            }
+    "/company/candidates": {
+      "get": {
+        "summary": "Get candidates",
+        "tags": [
+          "Company"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
           }
-        },
-        "responses": { "200": { "description": "OK" } }
+        }
       }
     },
-    "/api/v1/admin": {
-      "get": { "tags": ["Admin Portal & Settings (BRD 12/19)"], "summary": "List Admin Audit Logs", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Admin Portal & Settings (BRD 12/19)"], "summary": "Create Setting Override", "responses": { "201": { "description": "Created" } } }
+    "/company/candidate/{id}": {
+      "get": {
+        "summary": "Get candidate by ID",
+        "tags": [
+          "Company"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
     },
-    "/api/v1/notifications": {
-      "get": { "tags": ["Notifications & Messages (BRD 16)"], "summary": "List Alert Notifications", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Notifications & Messages (BRD 16)"], "summary": "Send Push/Email Notification", "responses": { "201": { "description": "Created" } } }
+    "/company/candidate/shortlist": {
+      "post": {
+        "summary": "Shortlist candidate",
+        "tags": [
+          "Company"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
     },
-    "/api/v1/analytics": {
-      "get": { "tags": ["Analytics Dashboard (BRD 13)"], "summary": "List Platform Analytics Summary", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Analytics Dashboard (BRD 13)"], "summary": "Aggregate Analytics Snapshots", "responses": { "201": { "description": "Created" } } }
-    }
-  },
-  "components": {
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
+    "/company/interview/schedule": {
+      "post": {
+        "summary": "Schedule interview",
+        "tags": [
+          "Company"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/company/hiring/decision": {
+      "post": {
+        "summary": "Hiring decision",
+        "tags": [
+          "Company"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/company/analytics": {
+      "get": {
+        "summary": "Company analytics",
+        "tags": [
+          "Company"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/students": {
+      "get": {
+        "summary": "Get students",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create students",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/students/{id}": {
+      "put": {
+        "summary": "Update students",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete students",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/companies": {
+      "get": {
+        "summary": "Get companies",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create companies",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/companies/{id}": {
+      "put": {
+        "summary": "Update companies",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete companies",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/universities": {
+      "get": {
+        "summary": "Get universities",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create universities",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/universities/{id}": {
+      "put": {
+        "summary": "Update universities",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete universities",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/semesters": {
+      "get": {
+        "summary": "Get semesters",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create semesters",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/semesters/{id}": {
+      "put": {
+        "summary": "Update semesters",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete semesters",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/modules": {
+      "get": {
+        "summary": "Get modules",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create modules",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/modules/{id}": {
+      "put": {
+        "summary": "Update modules",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete modules",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/topics": {
+      "get": {
+        "summary": "Get topics",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create topics",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/topics/{id}": {
+      "put": {
+        "summary": "Update topics",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete topics",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/assignments": {
+      "get": {
+        "summary": "Get assignments",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create assignments",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/assignments/{id}": {
+      "put": {
+        "summary": "Update assignments",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete assignments",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/projects": {
+      "get": {
+        "summary": "Get projects",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create projects",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/projects/{id}": {
+      "put": {
+        "summary": "Update projects",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete projects",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/certificates": {
+      "get": {
+        "summary": "Get certificates",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create certificates",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/certificates/{id}": {
+      "put": {
+        "summary": "Update certificates",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete certificates",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/leaderboard": {
+      "get": {
+        "summary": "Get leaderboard",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create leaderboard",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/leaderboard/{id}": {
+      "put": {
+        "summary": "Update leaderboard",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete leaderboard",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/ai-prompts": {
+      "get": {
+        "summary": "Get ai-prompts",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create ai-prompts",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/ai-prompts/{id}": {
+      "put": {
+        "summary": "Update ai-prompts",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete ai-prompts",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/dashboard-analytics": {
+      "get": {
+        "summary": "Dashboard Analytics",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/feedback-management": {
+      "get": {
+        "summary": "Feedback Management",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/platform-settings": {
+      "get": {
+        "summary": "Platform Settings",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/admin/user-management": {
+      "get": {
+        "summary": "User Management",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
       }
     }
   }

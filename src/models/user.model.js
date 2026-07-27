@@ -17,8 +17,13 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['student', 'recruiter', 'admin'],
+      enum: ['student', 'company_hr', 'recruiter', 'admin'],
       default: 'student'
+    },
+    defaultPortal: {
+      type: String,
+      enum: ['Student Portal', 'Company Portal', 'Admin Portal'],
+      default: 'Student Portal'
     },
     isEmailVerified: {
       type: Boolean,

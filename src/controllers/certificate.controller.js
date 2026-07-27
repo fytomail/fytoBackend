@@ -1,55 +1,48 @@
-const Certificate = require('../models/certificate.model.js');
-
-class CertificateController {
-  async list(req, res, next) {
-    try {
-      const data = await Certificate.find(req.query);
-      res.status(200).json({ status: 'success', data });
-    } catch (error) {
-      next(error);
-    }
+// certificate Controller
+const getCertificates = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Get certificates" });
+  } catch (error) {
+    next(error);
   }
+};
 
-  async get(req, res, next) {
-    try {
-      const data = await Certificate.findById(req.params.id);
-      if (!data) {
-        const error = new Error('Certificate not found');
-        error.statusCode = 404;
-        return next(error);
-      }
-      res.status(200).json({ status: 'success', data });
-    } catch (error) {
-      next(error);
-    }
+const getCertificateById = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Get certificate" });
+  } catch (error) {
+    next(error);
   }
+};
 
-  async create(req, res, next) {
-    try {
-      const data = await Certificate.create(req.body);
-      res.status(201).json({ status: 'success', data });
-    } catch (error) {
-      next(error);
-    }
+const downloadCertificate = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Download certificate" });
+  } catch (error) {
+    next(error);
   }
+};
 
-  async update(req, res, next) {
-    try {
-      const data = await Certificate.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      res.status(200).json({ status: 'success', data });
-    } catch (error) {
-      next(error);
-    }
+const verifyCertificate = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Verify certificate" });
+  } catch (error) {
+    next(error);
   }
+};
 
-  async delete(req, res, next) {
-    try {
-      await Certificate.findByIdAndDelete(req.params.id);
-      res.status(204).send();
-    } catch (error) {
-      next(error);
-    }
+const generateCertificate = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Generate certificate" });
+  } catch (error) {
+    next(error);
   }
-}
+};
 
-module.exports = new CertificateController();
+module.exports = {
+  getCertificates,
+  getCertificateById,
+  downloadCertificate,
+  verifyCertificate,
+  generateCertificate
+};

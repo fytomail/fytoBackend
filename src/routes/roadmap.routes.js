@@ -1,12 +1,14 @@
 const express = require('express');
-const roadmapController = require('../controllers/roadmap.controller.js');
-
 const router = express.Router();
+const roadmapController = require('../controllers/roadmap.controller');
 
-router.get('/', roadmapController.list);
-router.get('/:id', roadmapController.get);
-router.post('/', roadmapController.create);
-router.patch('/:id', roadmapController.update);
-router.delete('/:id', roadmapController.delete);
+router.get('/', roadmapController.getRoadmap);
+router.get('/semesters', roadmapController.getSemesters);
+router.get('/semester/:id', roadmapController.getSemesterById);
+router.get('/semester/:id/modules', roadmapController.getSemesterModules);
+router.get('/module/:id/topics', roadmapController.getModuleTopics);
+router.get('/topic/:id', roadmapController.getTopicById);
+router.put('/topic/:id/complete', roadmapController.completeTopic);
+router.put('/semester/unlock', roadmapController.unlockSemester);
 
 module.exports = router;

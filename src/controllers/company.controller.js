@@ -1,55 +1,112 @@
-const Company = require('../models/company.model.js');
+// Company / HR Controller
 
-class CompanyController {
-  async list(req, res, next) {
-    try {
-      const data = await Company.find(req.query);
-      res.status(200).json({ status: 'success', data });
-    } catch (error) {
-      next(error);
-    }
+const login = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Company login" });
+  } catch (error) {
+    next(error);
   }
+};
 
-  async get(req, res, next) {
-    try {
-      const data = await Company.findById(req.params.id);
-      if (!data) {
-        const error = new Error('Company not found');
-        error.statusCode = 404;
-        return next(error);
-      }
-      res.status(200).json({ status: 'success', data });
-    } catch (error) {
-      next(error);
-    }
+const getProfile = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Company profile" });
+  } catch (error) {
+    next(error);
   }
+};
 
-  async create(req, res, next) {
-    try {
-      const data = await Company.create(req.body);
-      res.status(201).json({ status: 'success', data });
-    } catch (error) {
-      next(error);
-    }
+const getJobs = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Jobs list" });
+  } catch (error) {
+    next(error);
   }
+};
 
-  async update(req, res, next) {
-    try {
-      const data = await Company.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      res.status(200).json({ status: 'success', data });
-    } catch (error) {
-      next(error);
-    }
+const createJob = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Job created" });
+  } catch (error) {
+    next(error);
   }
+};
 
-  async delete(req, res, next) {
-    try {
-      await Company.findByIdAndDelete(req.params.id);
-      res.status(204).send();
-    } catch (error) {
-      next(error);
-    }
+const updateJob = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Job updated" });
+  } catch (error) {
+    next(error);
   }
-}
+};
 
-module.exports = new CompanyController();
+const deleteJob = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Job deleted" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getCandidates = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Candidates list" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getCandidateById = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Candidate details" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const shortlistCandidate = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Candidate shortlisted" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const scheduleInterview = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Interview scheduled" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const hiringDecision = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Hiring decision recorded" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getAnalytics = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Company analytics" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  login,
+  getProfile,
+  getJobs,
+  createJob,
+  updateJob,
+  deleteJob,
+  getCandidates,
+  getCandidateById,
+  shortlistCandidate,
+  scheduleInterview,
+  hiringDecision,
+  getAnalytics
+};

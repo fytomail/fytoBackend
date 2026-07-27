@@ -1,55 +1,75 @@
-const Project = require('../models/project.model.js');
-
-class ProjectController {
-  async list(req, res, next) {
-    try {
-      const data = await Project.find(req.query);
-      res.status(200).json({ status: 'success', data });
-    } catch (error) {
-      next(error);
-    }
+// project Controller
+const getProjects = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Get projects" });
+  } catch (error) {
+    next(error);
   }
+};
 
-  async get(req, res, next) {
-    try {
-      const data = await Project.findById(req.params.id);
-      if (!data) {
-        const error = new Error('Project not found');
-        error.statusCode = 404;
-        return next(error);
-      }
-      res.status(200).json({ status: 'success', data });
-    } catch (error) {
-      next(error);
-    }
+const getProjectById = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Get project" });
+  } catch (error) {
+    next(error);
   }
+};
 
-  async create(req, res, next) {
-    try {
-      const data = await Project.create(req.body);
-      res.status(201).json({ status: 'success', data });
-    } catch (error) {
-      next(error);
-    }
+const createProject = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Create project" });
+  } catch (error) {
+    next(error);
   }
+};
 
-  async update(req, res, next) {
-    try {
-      const data = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      res.status(200).json({ status: 'success', data });
-    } catch (error) {
-      next(error);
-    }
+const uploadProject = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Upload project" });
+  } catch (error) {
+    next(error);
   }
+};
 
-  async delete(req, res, next) {
-    try {
-      await Project.findByIdAndDelete(req.params.id);
-      res.status(204).send();
-    } catch (error) {
-      next(error);
-    }
+const submitProject = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Submit project" });
+  } catch (error) {
+    next(error);
   }
-}
+};
 
-module.exports = new ProjectController();
+const evaluateProject = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Evaluate project" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getReport = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Project report" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getHistory = async (req, res, next) => {
+  try {
+    res.status(200).json({ success: true, message: "Project history" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  getProjects,
+  getProjectById,
+  createProject,
+  uploadProject,
+  submitProject,
+  evaluateProject,
+  getReport,
+  getHistory
+};

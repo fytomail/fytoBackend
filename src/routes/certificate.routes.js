@@ -1,12 +1,11 @@
 const express = require('express');
-const certificateController = require('../controllers/certificate.controller.js');
-
 const router = express.Router();
+const controller = require('../controllers/certificate.controller');
 
-router.get('/', certificateController.list);
-router.get('/:id', certificateController.get);
-router.post('/', certificateController.create);
-router.patch('/:id', certificateController.update);
-router.delete('/:id', certificateController.delete);
+router.get('/', controller.getCertificates);
+router.get('/:id', controller.getCertificateById);
+router.get('/download', controller.downloadCertificate);
+router.get('/verify', controller.verifyCertificate);
+router.post('/generate', controller.generateCertificate);
 
 module.exports = router;

@@ -1,14 +1,12 @@
 const express = require('express');
-const aiController = require('../controllers/ai.controller');
-const aiValidation = require('../validators/ai.validator');
-const validate = require('../middlewares/validate');
-const authenticate = require('../middlewares/authenticate');
+const router = express.Router();
+const controller = require('../controllers/ai.controller');
 
-const router = Router = express.Router();
-
-router.use(authenticate);
-
-router.post('/roadmap', validate(aiValidation.generateRoadmap), aiController.generateRoadmap);
-router.post('/evaluate', validate(aiValidation.evaluateProject), aiController.evaluateProject);
+router.post('/summary', controller.summary);
+router.post('/ask', controller.ask);
+router.post('/notes', controller.notes);
+router.post('/explain-code', controller.explainCode);
+router.post('/examples', controller.examples);
+router.post('/hints', controller.hints);
 
 module.exports = router;

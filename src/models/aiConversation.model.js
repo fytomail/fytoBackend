@@ -2,45 +2,21 @@ const mongoose = require('mongoose');
 
 const aiConversationSchema = new mongoose.Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
-    },
-    purpose: {
-      type: String,
-      required: true
-    },
-    prompt: {
-      type: String,
-      required: true
-    },
-    systemInstruction: {
-      type: String
-    },
-    rawResponse: {
-      type: String
-    },
-    parsedResponse: {
-      type: mongoose.Schema.Types.Mixed
-    },
-    provider: {
-      type: String,
-      required: true
-    },
-    model: {
-      type: String,
-      required: true
-    },
+    user: { type: String, required: true },
+    purpose: { type: String, required: true },
+    prompt: { type: String },
+    systemInstruction: { type: String },
+    rawResponse: { type: String },
+    parsedResponse: { type: mongoose.Schema.Types.Mixed },
+    provider: { type: String },
+    model: { type: String },
     tokensUsed: {
-      promptTokens: { type: Number, default: 0 },
-      completionTokens: { type: Number, default: 0 },
-      totalTokens: { type: Number, default: 0 }
+      promptTokens: Number,
+      completionTokens: Number,
+      totalTokens: Number
     }
   },
-  {
-    timestamps: true
-  }
+  { timestamps: true }
 );
 
 const AIConversation = mongoose.model('AIConversation', aiConversationSchema);

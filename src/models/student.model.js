@@ -17,6 +17,15 @@ const studentSchema = new mongoose.Schema(
       type: String,
       trim: true
     },
+    university: {
+      type: String,
+      trim: true,
+      default: 'Prime Wave University'
+    },
+    location: {
+      type: String,
+      trim: true
+    },
     bio: {
       type: String,
       trim: true
@@ -25,29 +34,36 @@ const studentSchema = new mongoose.Schema(
       type: String,
       trim: true
     },
-    domain: {
-      type: String,
-      trim: true
+    creditScore: {
+      type: Number,
+      default: 0
     },
-    role: {
-      type: String,
-      trim: true
+    currentSemester: {
+      type: Number,
+      default: 1,
+      min: 1,
+      max: 8
     },
-    skills: [
-      {
-        type: String
-      }
-    ],
-    interests: [
-      {
-        type: String
-      }
-    ],
+    unlockedSemesters: {
+      type: [Number],
+      default: [1]
+    },
+    leaderboardRank: {
+      type: Number,
+      default: 0
+    },
+    skills: [{ type: String }],
+    interests: [{ type: String }],
+    github: { type: String, trim: true },
+    resume: { type: String, trim: true },
+    verifiedProjects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
+    certificates: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Certificate' }],
     progress: {
-      roadmapId: mongoose.Schema.Types.ObjectId,
       completedTopics: [String],
-      completedQuizzes: [String],
-      completedProjects: [String]
+      completedModules: [String],
+      completedSemesters: [Number],
+      recentAssignments: [mongoose.Schema.Types.Mixed],
+      recentProjects: [mongoose.Schema.Types.Mixed]
     },
     settings: {
       notificationsEnabled: {

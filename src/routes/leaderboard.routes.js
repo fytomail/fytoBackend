@@ -1,12 +1,10 @@
 const express = require('express');
-const leaderboardController = require('../controllers/leaderboard.controller.js');
-
 const router = express.Router();
+const controller = require('../controllers/leaderboard.controller');
 
-router.get('/', leaderboardController.list);
-router.get('/:id', leaderboardController.get);
-router.post('/', leaderboardController.create);
-router.patch('/:id', leaderboardController.update);
-router.delete('/:id', leaderboardController.delete);
+router.get('/', controller.getLeaderboard);
+router.get('/top10', controller.getTop10);
+router.get('/rank', controller.getRank);
+router.get('/profile/:id', controller.getProfile);
 
 module.exports = router;
