@@ -1,26 +1,14 @@
 const mongoose = require('mongoose');
 const dbConfig = require('./src/config/db.config');
 
-const College = require('./src/models/college.model');
-const Jobs = require('./src/models/jobs.model');
 const Project = require('./src/models/project.model');
-
-const dummyColleges = [
-  { name: 'Massachusetts Institute of Technology', location: 'Cambridge, MA', establishedYear: 1861 },
-  { name: 'Stanford University', location: 'Stanford, CA', establishedYear: 1885 },
-  { name: 'Oxford University', location: 'Oxford, UK', establishedYear: 1096 }
-];
-
-const dummyJobs = [
-  { title: 'Frontend Developer', companyName: 'Google', salary: '$120,000/yr', requirements: ['React', 'JavaScript', 'TailwindCSS'] },
-  { title: 'Full Stack Engineer', companyName: 'Stripe', salary: '$145,000/yr', requirements: ['Node.js', 'PostgreSQL', 'TypeScript'] },
-  { title: 'AI Research Scientist', companyName: 'OpenAI', salary: '$210,000/yr', requirements: ['Python', 'PyTorch', 'Transformers'] }
-];
+const User = require('./src/models/user.model');
+const Student = require('./src/models/student.model');
 
 const dummyProjects = [
-  { title: 'E-commerce API Gateway', description: 'Design a high-throughput stripe microservice gateway', difficulty: 'Intermediate' },
-  { title: 'Interactive AI Chat Room', description: 'Build a serverless WebSockets chat application powered by LLM models', difficulty: 'Advanced' },
-  { title: 'Personal Portfolios Showcase', description: 'Create a clean, responsive single-page responsive portfolio layout', difficulty: 'Beginner' }
+  { projectTitle: 'E-commerce API Gateway', repoUrl: 'https://github.com/example/ecommerce-api', liveUrl: 'https://ecommerce.example.com', status: 'VERIFIED' },
+  { projectTitle: 'Interactive AI Chat Room', repoUrl: 'https://github.com/example/ai-chatroom', status: 'EVALUATED' },
+  { projectTitle: 'Personal Portfolios Showcase', repoUrl: 'https://github.com/example/portfolio-showcase', status: 'SUBMITTED' }
 ];
 
 console.log('Connecting to database...');
@@ -28,20 +16,62 @@ mongoose.connect(dbConfig.uri, dbConfig.options)
   .then(async () => {
     console.log('Connected successfully. Cleaning up old database collections...');
     
-    await College.deleteMany({});
-    await Jobs.deleteMany({});
     await Project.deleteMany({});
+    await User.deleteMany({});
+    await Student.deleteMany({});
 
-    console.log('Seeding new dummy data into MongoDB Atlas...');
-    
-    const collegesResult = await College.insertMany(dummyColleges);
-    console.log(`  └─ Successfully seeded ${collegesResult.length} Colleges!`);
-    
-    const jobsResult = await Jobs.insertMany(dummyJobs);
-    console.log(`  └─ Successfully seeded ${jobsResult.length} Jobs!`);
-    
-    const projectsResult = await Project.insertMany(dummyProjects);
+    console.log('Seeding default login user credentials...');
+
+    // Seed default users using User.create so bcrypt password pre-save hook triggers
+    const studentUser = await User.create({
+      name: 'Student Demo User',
+      username: 'student',
+      email: 'student@example.com',
+      password: 'student123',
+      role: 'student',
+      defaultPortal: 'Student Portal'
+    });
+
+    const adminUser = await User.create({
+      name: 'Admin Demo User',
+      username: 'admin',
+      email: 'admin@example.com',
+      password: 'admin123',
+      role: 'admin',
+      defaultPortal: 'Admin Portal'
+    });
+
+    const companyUser = await User.create({
+      name: 'Company HR User',
+      username: 'company_hr',
+      email: 'hr@company.com',
+      password: 'company123',
+      role: 'company_hr',
+      defaultPortal: 'Company Portal'
+    });
+
+    const studentProfile = await Student.create({
+      user: studentUser._id,
+      name: studentUser.name,
+      phone: '+1 555 0199',
+      university: 'Massachusetts Institute of Technology',
+      creditScore: 250,
+      currentSemester: 3,
+      unlockedSemesters: [1, 2, 3],
+      leaderboardRank: 1,
+      skills: ['Node.js', 'React', 'MongoDB', 'Python'],
+      interests: ['Web Development', 'Artificial Intelligence']
+    });
+
+    const projectsToSeed = dummyProjects.map(p => ({ ...p, student: studentProfile._id }));
+    const projectsResult = await Project.insertMany(projectsToSeed);
     console.log(`  └─ Successfully seeded ${projectsResult.length} Projects!`);
+
+    console.log(`  └─ Successfully seeded default User credentials:`);
+    console.log(`     1) Student: username='student' OR email='student@example.com' | password='student123'`);
+    console.log(`     2) Admin:   username='admin'   OR email='admin@example.com'   | password='admin123'`);
+    console.log(`     3) HR:      username='company_hr' OR email='hr@company.com' | password='company123'`);
+    console.log(`  └─ Successfully created Student profile ID: ${studentProfile._id}`);
 
     console.log('Seeding process complete!');
     await mongoose.connection.close();

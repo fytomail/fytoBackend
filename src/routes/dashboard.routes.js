@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const dashboardController = require('../controllers/dashboard.controller');
-// const auth = require('../middlewares/auth');
+const authenticate = require('../middlewares/authenticate');
 
-// router.use(auth); // Protect all dashboard routes
+router.use(authenticate);
 
 router.get('/', dashboardController.getDashboard);
 router.get('/progress', dashboardController.getProgress);

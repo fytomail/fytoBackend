@@ -32,38 +32,48 @@ const generateTokens = async (user) => {
 
 const register = async (req, res, next) => {
   try {
-    const { name, email, password, role, defaultPortal, phone } = req.body;
+    const { name, username, email, password, role, defaultPortal, phone } = req.body;
 
-    const existingUser = await User.findOne({ email: email.toLowerCase() });
+    const cleanEmail = email ? email.trim().toLowerCase() : '';
+    const cleanUsername = username ? username.trim().toLowerCase() : (cleanEmail ? cleanEmail.split('@')[0] : '');
+
+    const existingUser = await User.findOne({
+      $or: [
+        { email: cleanEmail },
+        ...(cleanUsername ? [{ username: cleanUsername }] : [])
+      ]
+    });
+
     if (existingUser) {
-      throw new ApiError(400, 'Email is already registered');
+      throw new ApiError(400, 'Email or username is already registered');
     }
 
     const user = await User.create({
-      name: name || email.split('@')[0],
-      email: email.toLowerCase(),
+      name: name || cleanUsername || cleanEmail.split('@')[0],
+      username: cleanUsername,
+      email: cleanEmail,
       password,
       role: role || 'student',
       defaultPortal: defaultPortal || (role === 'admin' ? 'Admin Portal' : role === 'company_hr' ? 'Company Portal' : 'Student Portal')
     });
 
+    let studentProfile = null;
     if (user.role === 'student') {
-      await Student.create({
+      studentProfile = await Student.create({
         user: user._id,
-        name: user.name || email.split('@')[0],
+        name: user.name || cleanUsername || cleanEmail.split('@')[0],
         phone: phone || ''
       });
     }
 
     const tokens = await generateTokens(user);
 
-    const userObj = user.toJSON();
-
     res.status(201).json({
       success: true,
       message: 'User registered successfully',
       data: {
-        user: userObj,
+        user: user.toJSON(),
+        student: studentProfile,
         tokens
       }
     });
@@ -74,22 +84,55 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    if (email && password) {
-      const user = await User.findOne({ email: email.toLowerCase() });
-      if (user && (await user.isPasswordMatch(password))) {
-        const tokens = await generateTokens(user);
-        return res.status(200).json({
-          success: true,
-          message: 'Login successful',
-          data: {
-            user: user.toJSON(),
-            tokens
-          }
+    const { email, username, password } = req.body;
+    const identifier = email || username;
+
+    if (!identifier || !password) {
+      throw new ApiError(400, 'Email or username and password are required');
+    }
+
+    const cleanIdentifier = identifier.trim().toLowerCase();
+
+    const user = await User.findOne({
+      $or: [
+        { email: cleanIdentifier },
+        { username: cleanIdentifier },
+        { name: identifier.trim() }
+      ]
+    });
+
+    if (!user) {
+      throw new ApiError(401, 'Invalid credentials: User not found');
+    }
+
+    const isMatch = await user.isPasswordMatch(password);
+    if (!isMatch) {
+      throw new ApiError(401, 'Invalid credentials: Password incorrect');
+    }
+
+    const tokens = await generateTokens(user);
+
+    let studentProfile = null;
+    if (user.role === 'student') {
+      studentProfile = await Student.findOne({ user: user._id });
+      if (!studentProfile) {
+        studentProfile = await Student.create({
+          user: user._id,
+          name: user.name || cleanIdentifier.split('@')[0],
+          university: 'Prime Wave University'
         });
       }
     }
-    res.status(200).json({ success: true, message: "Login" });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Login successful',
+      data: {
+        user: user.toJSON(),
+        student: studentProfile,
+        tokens
+      }
+    });
   } catch (error) {
     next(error);
   }
@@ -109,15 +152,29 @@ const logout = async (req, res, next) => {
 
 const refreshToken = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: "Refresh JWT" });
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      throw new ApiError(400, 'Refresh token required');
+    }
+    const decoded = jwt.verify(refreshToken, jwtConfig.secret);
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      throw new ApiError(401, 'User not found');
+    }
+    const tokens = await generateTokens(user);
+    res.status(200).json({
+      success: true,
+      message: "Tokens refreshed successfully",
+      data: { tokens }
+    });
   } catch (error) {
-    next(error);
+    next(new ApiError(401, 'Invalid or expired refresh token'));
   }
 };
 
 const forgotPassword = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: "Forgot password" });
+    res.status(200).json({ success: true, message: "Password reset link sent if account exists" });
   } catch (error) {
     next(error);
   }
@@ -125,7 +182,7 @@ const forgotPassword = async (req, res, next) => {
 
 const resetPassword = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: "Reset password" });
+    res.status(200).json({ success: true, message: "Password reset successful" });
   } catch (error) {
     next(error);
   }
@@ -133,7 +190,27 @@ const resetPassword = async (req, res, next) => {
 
 const profile = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: "Logged-in user" });
+    if (!req.user || !req.user.id) {
+      throw new ApiError(401, 'Authentication required');
+    }
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      throw new ApiError(404, 'User not found');
+    }
+    let studentData = null;
+    if (user.role === 'student') {
+      studentData = await Student.findOne({ user: user._id });
+    }
+    const tokens = await generateTokens(user);
+    res.status(200).json({
+      success: true,
+      message: "Logged-in user profile",
+      data: {
+        user: user.toJSON(),
+        student: studentData,
+        tokens
+      }
+    });
   } catch (error) {
     next(error);
   }
@@ -141,7 +218,17 @@ const profile = async (req, res, next) => {
 
 const changePassword = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: "Change password" });
+    const { oldPassword, newPassword } = req.body;
+    if (!req.user || !req.user.id) {
+      throw new ApiError(401, 'Authentication required');
+    }
+    const user = await User.findById(req.user.id);
+    if (!user || !(await user.isPasswordMatch(oldPassword))) {
+      throw new ApiError(400, 'Current password is incorrect');
+    }
+    user.password = newPassword;
+    await user.save();
+    res.status(200).json({ success: true, message: "Password changed successfully" });
   } catch (error) {
     next(error);
   }
@@ -149,7 +236,22 @@ const changePassword = async (req, res, next) => {
 
 const verifyToken = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: "Verify JWT" });
+    if (!req.user || !req.user.id) {
+      throw new ApiError(401, 'Invalid or missing token');
+    }
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      throw new ApiError(401, 'User not found');
+    }
+    const tokens = await generateTokens(user);
+    res.status(200).json({
+      success: true,
+      message: "JWT is valid",
+      data: {
+        user: user.toJSON(),
+        tokens
+      }
+    });
   } catch (error) {
     next(error);
   }

@@ -37,6 +37,10 @@
                     "type": "string",
                     "example": "John Doe"
                   },
+                  "username": {
+                    "type": "string",
+                    "example": "johndoe"
+                  },
                   "email": {
                     "type": "string",
                     "example": "student@example.com"
@@ -54,6 +58,14 @@
                       "admin"
                     ],
                     "default": "student"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "+1 555 0199"
+                  },
+                  "defaultPortal": {
+                    "type": "string",
+                    "example": "Student Portal"
                   }
                 }
               }
@@ -62,7 +74,14 @@
         },
         "responses": {
           "201": {
-            "description": "User successfully registered"
+            "description": "User registered successfully with access token and refresh token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
           },
           "400": {
             "description": "Validation error or email already exists"
@@ -72,13 +91,57 @@
     },
     "/auth/login": {
       "post": {
-        "summary": "Login",
+        "summary": "Login with username/email and password",
         "tags": [
           "Authentication"
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "password"
+                ],
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "example": "student"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "student@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "student123"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "Successful response"
+            "description": "Login successful - returns user profile, student data, access token, and refresh token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -98,13 +161,67 @@
     },
     "/auth/refresh-token": {
       "post": {
-        "summary": "Refresh JWT",
+        "summary": "Refresh JWT Access and Refresh tokens",
         "tags": [
           "Authentication"
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "refreshToken"
+                ],
+                "properties": {
+                  "refreshToken": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1..."
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "Successful response"
+            "description": "Tokens refreshed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Tokens refreshed successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "tokens": {
+                          "$ref": "#/components/schemas/Tokens"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or expired refresh token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -137,13 +254,35 @@
     },
     "/auth/profile": {
       "get": {
-        "summary": "Logged-in user",
+        "summary": "Get logged-in user profile with active tokens",
         "tags": [
           "Authentication"
         ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Successful response"
+            "description": "Logged-in user profile and updated tokens",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing access token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -163,26 +302,128 @@
     },
     "/auth/verify-token": {
       "get": {
-        "summary": "Verify JWT",
+        "summary": "Verify JWT access token",
         "tags": [
           "Authentication"
         ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Successful response"
+            "description": "JWT is valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or expired access token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
     },
     "/dashboard": {
       "get": {
-        "summary": "Get dashboard data",
+        "summary": "Get dashboard overview stats, recent projects, and recent assignments",
         "tags": [
           "Dashboard"
         ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Successful response"
+            "description": "Dashboard data retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Dashboard data retrieved successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "user": {
+                          "$ref": "#/components/schemas/User"
+                        },
+                        "student": {
+                          "$ref": "#/components/schemas/Student"
+                        },
+                        "stats": {
+                          "type": "object",
+                          "properties": {
+                            "creditScore": {
+                              "type": "number",
+                              "example": 250
+                            },
+                            "currentSemester": {
+                              "type": "number",
+                              "example": 3
+                            },
+                            "leaderboardRank": {
+                              "type": "number",
+                              "example": 1
+                            },
+                            "completedProjectsCount": {
+                              "type": "number",
+                              "example": 3
+                            },
+                            "completedAssignmentsCount": {
+                              "type": "number",
+                              "example": 5
+                            }
+                          }
+                        },
+                        "recentProjects": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "recentAssignments": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied. No token provided or token expired.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -1602,5 +1843,337 @@
         }
       }
     }
-  }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Enter your JWT accessToken in the format: Bearer <accessToken>"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "6a68b5fd0a41f3ba0b34b3b9"
+          },
+          "name": {
+            "type": "string",
+            "example": "Student Demo User"
+          },
+          "username": {
+            "type": "string",
+            "example": "student"
+          },
+          "email": {
+            "type": "string",
+            "example": "student@example.com"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "student",
+              "company_hr",
+              "recruiter",
+              "admin"
+            ],
+            "example": "student"
+          },
+          "defaultPortal": {
+            "type": "string",
+            "example": "Student Portal"
+          },
+          "isEmailVerified": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "Student": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "6a68b79c792781564dd26552"
+          },
+          "user": {
+            "type": "string",
+            "example": "6a68b5fd0a41f3ba0b34b3b9"
+          },
+          "name": {
+            "type": "string",
+            "example": "Student Demo User"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+1 555 0199"
+          },
+          "university": {
+            "type": "string",
+            "example": "Massachusetts Institute of Technology"
+          },
+          "creditScore": {
+            "type": "number",
+            "example": 250
+          },
+          "currentSemester": {
+            "type": "number",
+            "example": 3
+          },
+          "unlockedSemesters": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "example": [
+              1,
+              2,
+              3
+            ]
+          },
+          "leaderboardRank": {
+            "type": "number",
+            "example": 1
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Node.js",
+              "React",
+              "MongoDB"
+            ]
+          },
+          "interests": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Web Development",
+              "AI"
+            ]
+          }
+        }
+      },
+      "Admin": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "6a68b5fd0a41f3ba0b34b3b0"
+          },
+          "user": {
+            "type": "string",
+            "example": "6a68b5fd0a41f3ba0b34b3b9"
+          },
+          "name": {
+            "type": "string",
+            "example": "Admin Demo User"
+          },
+          "email": {
+            "type": "string",
+            "example": "admin@example.com"
+          },
+          "department": {
+            "type": "string",
+            "example": "Management"
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "all"
+            ]
+          }
+        }
+      },
+      "Company": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "6a68b5fd0a41f3ba0b34b3c1"
+          },
+          "companyName": {
+            "type": "string",
+            "example": "Tech Corp"
+          },
+          "email": {
+            "type": "string",
+            "example": "hr@company.com"
+          },
+          "industry": {
+            "type": "string",
+            "example": "Software"
+          },
+          "location": {
+            "type": "string",
+            "example": "San Francisco, CA"
+          },
+          "website": {
+            "type": "string",
+            "example": "https://techcorp.example.com"
+          },
+          "contactPerson": {
+            "type": "string",
+            "example": "Jane Smith"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "PENDING",
+              "VERIFIED"
+            ],
+            "example": "ACTIVE"
+          }
+        }
+      },
+      "Certificate": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "6a68b5fd0a41f3ba0b34b3d2"
+          },
+          "student": {
+            "type": "string",
+            "example": "6a68b79c792781564dd26552"
+          },
+          "certificateId": {
+            "type": "string",
+            "example": "CERT-2026-001"
+          },
+          "title": {
+            "type": "string",
+            "example": "Full Stack Development Certification"
+          },
+          "issueDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "credentialUrl": {
+            "type": "string",
+            "example": "https://credentials.example.com/cert/001"
+          },
+          "skillsVerified": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Node.js",
+              "Express",
+              "MongoDB"
+            ]
+          }
+        }
+      },
+      "Leaderboard": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "6a68b5fd0a41f3ba0b34b3e3"
+          },
+          "student": {
+            "type": "string",
+            "example": "6a68b79c792781564dd26552"
+          },
+          "rank": {
+            "type": "number",
+            "example": 1
+          },
+          "creditScore": {
+            "type": "number",
+            "example": 250
+          },
+          "totalProjectsCompleted": {
+            "type": "number",
+            "example": 3
+          },
+          "totalAssignmentsCompleted": {
+            "type": "number",
+            "example": 5
+          }
+        }
+      },
+      "Tokens": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "refreshToken": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Login successful"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "$ref": "#/components/schemas/User"
+              },
+              "student": {
+                "$ref": "#/components/schemas/Student"
+              },
+              "tokens": {
+                "$ref": "#/components/schemas/Tokens"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "error"
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "number",
+                "example": 401
+              },
+              "message": {
+                "type": "string",
+                "example": "Invalid credentials or missing token"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
 }

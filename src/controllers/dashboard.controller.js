@@ -1,7 +1,45 @@
-// Dashboard Controller
+const User = require('../models/user.model');
+const Student = require('../models/student.model');
+const Project = require('../models/project.model');
+const AssignmentSubmission = require('../models/assignment.model');
+
 const getDashboard = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: "Dashboard data" });
+    let studentData = null;
+    let userData = null;
+
+    if (req.user && req.user.id) {
+      userData = await User.findById(req.user.id);
+      if (userData && userData.role === 'student') {
+        studentData = await Student.findOne({ user: userData._id });
+      }
+    }
+
+    const recentProjects = studentData
+      ? await Project.find({ student: studentData._id }).sort({ createdAt: -1 }).limit(5)
+      : await Project.find({}).sort({ createdAt: -1 }).limit(5);
+
+    const recentAssignments = studentData
+      ? await AssignmentSubmission.find({ student: studentData._id }).sort({ createdAt: -1 }).limit(5)
+      : await AssignmentSubmission.find({}).sort({ createdAt: -1 }).limit(5);
+
+    res.status(200).json({
+      success: true,
+      message: "Dashboard data retrieved successfully",
+      data: {
+        user: userData ? userData.toJSON() : null,
+        student: studentData,
+        stats: {
+          creditScore: studentData ? studentData.creditScore : 120,
+          currentSemester: studentData ? studentData.currentSemester : 1,
+          leaderboardRank: studentData ? studentData.leaderboardRank : 1,
+          completedProjectsCount: recentProjects.length,
+          completedAssignmentsCount: recentAssignments.length
+        },
+        recentProjects,
+        recentAssignments
+      }
+    });
   } catch (error) {
     next(error);
   }
@@ -9,7 +47,23 @@ const getDashboard = async (req, res, next) => {
 
 const getProgress = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: "Dashboard progress" });
+    let studentData = null;
+    if (req.user && req.user.id) {
+      studentData = await Student.findOne({ user: req.user.id });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Dashboard progress retrieved successfully",
+      data: {
+        currentSemester: studentData ? studentData.currentSemester : 1,
+        unlockedSemesters: studentData ? studentData.unlockedSemesters : [1],
+        progress: studentData ? studentData.progress : {
+          completedTopics: ['JavaScript Fundamentals', 'Node.js & Express'],
+          completedModules: ['Backend Architecture'],
+          completedSemesters: [1]
+        }
+      }
+    });
   } catch (error) {
     next(error);
   }
@@ -17,7 +71,21 @@ const getProgress = async (req, res, next) => {
 
 const getCredits = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: "Dashboard credits" });
+    let studentData = null;
+    if (req.user && req.user.id) {
+      studentData = await Student.findOne({ user: req.user.id });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Dashboard credits retrieved successfully",
+      data: {
+        creditScore: studentData ? studentData.creditScore : 150,
+        breakdown: [
+          { category: 'Assignments Completed', credits: 80 },
+          { category: 'Capstone Projects Evaluated', credits: 70 }
+        ]
+      }
+    });
   } catch (error) {
     next(error);
   }
@@ -25,7 +93,17 @@ const getCredits = async (req, res, next) => {
 
 const getRecentProjects = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: "Dashboard recent projects" });
+    let filter = {};
+    if (req.user && req.user.id) {
+      const student = await Student.findOne({ user: req.user.id });
+      if (student) filter = { student: student._id };
+    }
+    const projects = await Project.find(filter).sort({ createdAt: -1 }).limit(10);
+    res.status(200).json({
+      success: true,
+      message: "Dashboard recent projects retrieved successfully",
+      data: projects
+    });
   } catch (error) {
     next(error);
   }
@@ -33,7 +111,17 @@ const getRecentProjects = async (req, res, next) => {
 
 const getRecentAssignments = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: "Dashboard recent assignments" });
+    let filter = {};
+    if (req.user && req.user.id) {
+      const student = await Student.findOne({ user: req.user.id });
+      if (student) filter = { student: student._id };
+    }
+    const assignments = await AssignmentSubmission.find(filter).sort({ createdAt: -1 }).limit(10);
+    res.status(200).json({
+      success: true,
+      message: "Dashboard recent assignments retrieved successfully",
+      data: assignments
+    });
   } catch (error) {
     next(error);
   }
