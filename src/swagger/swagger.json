@@ -16,6 +16,60 @@
     }
   ],
   "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register new user",
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "student@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "student",
+                      "company_hr",
+                      "recruiter",
+                      "admin"
+                    ],
+                    "default": "student"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User successfully registered"
+          },
+          "400": {
+            "description": "Validation error or email already exists"
+          }
+        }
+      }
+    },
     "/auth/login": {
       "post": {
         "summary": "Login",

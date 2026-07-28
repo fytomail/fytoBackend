@@ -3,6 +3,10 @@ const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema(
   {
+    name: {
+      type: String,
+      trim: true
+    },
     email: {
       type: String,
       required: true,
@@ -31,7 +35,13 @@ const userSchema = new mongoose.Schema(
     }
   },
   {
-    timestamps: true
+    timestamps: true,
+    toJSON: {
+      transform(doc, ret) {
+        delete ret.password;
+        return ret;
+      }
+    }
   }
 );
 

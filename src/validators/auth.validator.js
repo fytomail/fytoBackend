@@ -2,9 +2,12 @@ const Joi = require('joi');
 
 const register = {
   body: Joi.object().keys({
+    name: Joi.string().optional().allow(''),
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
-    role: Joi.string().valid('student', 'recruiter').default('student')
+    password: Joi.string().required().min(6),
+    role: Joi.string().valid('student', 'company_hr', 'recruiter', 'admin').default('student'),
+    phone: Joi.string().optional().allow(''),
+    defaultPortal: Joi.string().optional()
   })
 };
 
