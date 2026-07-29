@@ -11,6 +11,7 @@ const logger = require('./middlewares/logger');
 
 // Domain Route Modules (Prime Wave BRD Workflow)
 const authRoutes = require('./routes/auth.routes');
+const studentRoutes = require('./routes/student.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
 const roadmapRoutes = require('./routes/roadmap.routes');
 const aiRoutes = require('./routes/ai.routes');
@@ -72,6 +73,7 @@ app.get('/', (req, res) => {
 
 // Prime Wave API Route Mountings
 app.use(`${appConfig.apiPrefix}/auth`, authRoutes);
+app.use(`${appConfig.apiPrefix}/students`, studentRoutes);
 app.use(`${appConfig.apiPrefix}/dashboard`, dashboardRoutes);
 app.use(`${appConfig.apiPrefix}/roadmap`, roadmapRoutes);
 app.use(`${appConfig.apiPrefix}/ai`, aiRoutes);
