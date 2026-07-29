@@ -33,7 +33,9 @@ const swaggerDocument = require('./swagger/swagger.json');
 const app = express();
 
 // Security HTTP headers
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 
 // Request logging via morgan + winston
 if (appConfig.env !== 'test') {
@@ -49,13 +51,34 @@ app.use(express.urlencoded({ extended: true }));
 // Gzip compression
 app.use(compression());
 
-// CORS configuration
-app.use(cors({
-  origin: appConfig.clientUrl,
-  credentials: true
-}));
+// Dynamic CORS configuration allowing meetkishore.in, localhost, and env-configured origins
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
 
-// Apply global rate limiting to all API endpoints
+    const configuredOrigins = appConfig.cors.origin;
+    if (configuredOrigins === '*' || (Array.isArray(configuredOrigins) && configuredOrigins.includes('*'))) {
+      return callback(null, true);
+    }
+
+    if (Array.isArray(configuredOrigins) && configuredOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    if (origin === 'https://meetkishore.in' || origin.endsWith('.meetkishore.in')) {
+      return callback(null, true);
+    }
+
+    return callback(null, true);
+  },
+  credentials: appConfig.cors.credentials,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
+};
+
+app.use(cors(corsOptions));
+
+// Apply global dynamic rate limiting to all API endpoints
 app.use(appConfig.apiPrefix, rateLimiter);
 
 // Health check endpoint

@@ -1,15 +1,26 @@
 const rateLimit = require('express-rate-limit');
+const appConfig = require('../config/app.config');
 
-const rateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per 15 minutes
+const limiterMiddleware = rateLimit({
+  windowMs: appConfig.rateLimit.windowMs,
+  max: appConfig.rateLimit.max,
   message: {
     status: 'error',
     statusCode: 429,
-    message: 'Too many requests, please try again later.'
+    message: appConfig.rateLimit.message
   },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  skip: (req) => {
+    return !appConfig.rateLimit.enabled || appConfig.rateLimit.max <= 0;
+  }
 });
+
+const rateLimiter = (req, res, next) => {
+  if (!appConfig.rateLimit.enabled || appConfig.rateLimit.max <= 0) {
+    return next();
+  }
+  return limiterMiddleware(req, res, next);
+};
 
 module.exports = rateLimiter;
