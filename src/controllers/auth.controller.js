@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const Student = require('../models/student.model');
+const Admin = require('../models/admin.model');
+const Company = require('../models/company.model');
 const RefreshToken = require('../models/refreshToken.model');
 const ApiError = require('../utils/ApiError');
 const jwtConfig = require('../config/jwt.config');
@@ -57,12 +59,25 @@ const register = async (req, res, next) => {
       defaultPortal: defaultPortal || (role === 'admin' ? 'Admin Portal' : role === 'company_hr' ? 'Company Portal' : 'Student Portal')
     });
 
-    let studentProfile = null;
+    let userProfile = null;
     if (user.role === 'student') {
-      studentProfile = await Student.create({
+      userProfile = await Student.create({
         user: user._id,
         name: user.name || cleanUsername || cleanEmail.split('@')[0],
         phone: phone || ''
+      });
+    } else if (user.role === 'admin') {
+      userProfile = await Admin.create({
+        user: user._id,
+        name: user.name || cleanUsername || cleanEmail.split('@')[0],
+        email: cleanEmail
+      });
+    } else if (user.role === 'company_hr') {
+      userProfile = await Company.create({
+        user: user._id,
+        companyName: user.name || cleanUsername || cleanEmail.split('@')[0],
+        email: cleanEmail,
+        contactPerson: user.name
       });
     }
 
@@ -73,7 +88,7 @@ const register = async (req, res, next) => {
       message: 'User registered successfully',
       data: {
         user: user.toJSON(),
-        student: studentProfile,
+        profile: userProfile,
         tokens
       }
     });
@@ -112,14 +127,32 @@ const login = async (req, res, next) => {
 
     const tokens = await generateTokens(user);
 
-    let studentProfile = null;
+    let userProfile = null;
     if (user.role === 'student') {
-      studentProfile = await Student.findOne({ user: user._id });
-      if (!studentProfile) {
-        studentProfile = await Student.create({
+      userProfile = await Student.findOne({ user: user._id });
+      if (!userProfile) {
+        userProfile = await Student.create({
           user: user._id,
           name: user.name || cleanIdentifier.split('@')[0],
           university: 'Prime Wave University'
+        });
+      }
+    } else if (user.role === 'admin') {
+      userProfile = await Admin.findOne({ user: user._id });
+      if (!userProfile) {
+        userProfile = await Admin.create({
+          user: user._id,
+          name: user.name || cleanIdentifier.split('@')[0],
+          email: user.email
+        });
+      }
+    } else if (user.role === 'company_hr') {
+      userProfile = await Company.findOne({ user: user._id });
+      if (!userProfile) {
+        userProfile = await Company.create({
+          user: user._id,
+          companyName: user.name || cleanIdentifier.split('@')[0],
+          email: user.email
         });
       }
     }
@@ -129,7 +162,7 @@ const login = async (req, res, next) => {
       message: 'Login successful',
       data: {
         user: user.toJSON(),
-        student: studentProfile,
+        profile: userProfile,
         tokens
       }
     });
@@ -197,9 +230,13 @@ const profile = async (req, res, next) => {
     if (!user) {
       throw new ApiError(404, 'User not found');
     }
-    let studentData = null;
+    let userProfile = null;
     if (user.role === 'student') {
-      studentData = await Student.findOne({ user: user._id });
+      userProfile = await Student.findOne({ user: user._id });
+    } else if (user.role === 'admin') {
+      userProfile = await Admin.findOne({ user: user._id });
+    } else if (user.role === 'company_hr') {
+      userProfile = await Company.findOne({ user: user._id });
     }
     const tokens = await generateTokens(user);
     res.status(200).json({
@@ -207,7 +244,7 @@ const profile = async (req, res, next) => {
       message: "Logged-in user profile",
       data: {
         user: user.toJSON(),
-        student: studentData,
+        profile: userProfile,
         tokens
       }
     });
