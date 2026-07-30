@@ -83,7 +83,7 @@ const updateProject = async (req, res, next) => {
 
 const uploadProject = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: "Upload project" });
+    res.status(200).json({ success: true, data: {} });
   } catch (error) {
     next(error);
   }
@@ -91,7 +91,7 @@ const uploadProject = async (req, res, next) => {
 
 const submitProject = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: "Submit project" });
+    const data = await require("../models/project.model").findByIdAndUpdate(req.params.id, {status: "SUBMITTED"}, {new: true}); res.status(200).json({ success: true, data });
   } catch (error) {
     next(error);
   }
@@ -99,7 +99,7 @@ const submitProject = async (req, res, next) => {
 
 const evaluateProject = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: "Evaluate project" });
+    const data = await require("../models/project.model").findByIdAndUpdate(req.params.id, {status: "EVALUATED"}, {new: true}); res.status(200).json({ success: true, data });
   } catch (error) {
     next(error);
   }
@@ -107,7 +107,7 @@ const evaluateProject = async (req, res, next) => {
 
 const getReport = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: "Project report" });
+    res.status(200).json({ success: true, data: {} });
   } catch (error) {
     next(error);
   }
@@ -115,7 +115,7 @@ const getReport = async (req, res, next) => {
 
 const getHistory = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: "Project history" });
+    const data = await require("../models/project.model").find(); res.status(200).json({ success: true, data });
   } catch (error) {
     next(error);
   }

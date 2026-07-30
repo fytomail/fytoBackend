@@ -55,7 +55,7 @@ const login = async (req, res, next) => {
 
 const getProfile = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: "Company profile" });
+    const data = await require("../models/company.model").findOne(); res.status(200).json({ success: true, data });
   } catch (error) {
     next(error);
   }
