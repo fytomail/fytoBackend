@@ -4,12 +4,24 @@ const ApiError = require('../utils/ApiError');
 // feedback Controller
 const submitFeedback = async (req, res, next) => {
   try {
-    const studentId = req.user ? req.user.id : req.body.student;
+    const Student = require('../models/student.model');
+    
+    let studentId = req.body.student;
+    if (!studentId && req.user && req.user.id) {
+      const studentProfile = await Student.findOne({ user: req.user.id });
+      if (studentProfile) {
+        studentId = studentProfile._id;
+      }
+    }
+
     if (!studentId) {
       throw new ApiError(400, "Student ID is required to submit feedback.");
     }
+    
+    const feedbackData = req.body.data || req.body;
+    
     const feedback = await Feedback.create({
-      ...req.body,
+      ...feedbackData,
       student: studentId
     });
     res.status(201).json({ success: true, message: "Feedback submitted successfully", data: feedback });
