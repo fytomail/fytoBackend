@@ -142,7 +142,7 @@ const deleteJob = async (req, res, next) => {
 
 const getCandidates = async (req, res, next) => {
   try {
-    const candidates = await Hiring.find().populate('student').populate('company').populate('jobPost');
+    const candidates = await Hiring.find().populate('student').populate('company').populate('jobPost').lean();
     res.status(200).json({ success: true, message: "Candidates list", data: candidates });
   } catch (error) {
     next(error);

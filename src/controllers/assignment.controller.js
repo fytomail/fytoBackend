@@ -4,7 +4,7 @@ const ApiError = require('../utils/ApiError');
 
 const getAssignments = async (req, res, next) => {
   try {
-    const submissions = await AssignmentSubmission.find().populate('student');
+    const submissions = await AssignmentSubmission.find().populate('student').lean();
     res.status(200).json({
       success: true,
       message: "Assignments retrieved successfully",
