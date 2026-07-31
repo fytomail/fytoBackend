@@ -9,5 +9,6 @@ router.get('/profile', controller.getProfile);
 router.get('/jobs', controller.getJobs);
 router.post('/jobs', controller.createJob);
 router.get('/candidates', controller.getCandidates);
+router.get('/analytics', controller.getAnalytics);
 
 module.exports = router;
